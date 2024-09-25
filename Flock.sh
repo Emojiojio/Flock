@@ -2,7 +2,12 @@
 # Miniconda安装路径
 MINICONDA_PATH="$HOME/miniconda"
 CONDA_EXECUTABLE="$MINICONDA_PATH/bin/conda"
-
+# 检查是否以root用户运行脚本
+if [ "$(id -u)" != "0" ]; then
+    echo "此脚本需要以root用户权限运行。"
+    echo "请尝试使用 'sudo -i' 命令切换到root用户，然后再次运行此脚本。"
+    exit 1
+fi
 
 # 确保 conda 被正确初始化
 ensure_conda_initialized() {
@@ -79,6 +84,7 @@ function install_node() {
     read -p "输入Hugging face API: " HF_TOKEN
     read -p "输入Flock API: " FLOCK_API_KEY
     read -p "输入任务ID: " TASK_ID
+    read -p "输入CVD: " CUDA_VISIBLE_DEVICES
     # 克隆仓库
     git clone https://github.com/FLock-io/llm-loss-validator.git
     # 进入项目目录
@@ -95,7 +101,7 @@ function install_node() {
 #!/bin/bash
 source "$MINICONDA_PATH/bin/activate" llm-loss-validator
 cd $SCRIPT_DIR/src
-CUDA_VISIBLE_DEVICES=0 \
+CUDA_VISIBLE_DEVICES="$CUDA_VISIBLE_DEVICES" \
 bash start.sh \
 --hf_token "$HF_TOKEN" \
 --flock_api_key "$FLOCK_API_KEY" \
