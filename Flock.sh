@@ -110,7 +110,7 @@ bash start.sh \
 --auto_clean_cache False
 EOF
     chmod +x run_validator.sh
-    pm2 start run_validator.sh --name "llm-loss-validator" -- start && pm2 save && pm2 startup
+    pm2 start run_validator.sh --name "llm-loss-validator2" -- start && pm2 save && pm2 startup
     echo "验证者节点已经启动."
 }
 
