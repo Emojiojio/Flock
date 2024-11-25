@@ -2,6 +2,7 @@
 # Miniconda安装路径
 MINICONDA_PATH="$HOME/miniconda"
 CONDA_EXECUTABLE="$MINICONDA_PATH/bin/conda"
+
 # 检查是否以root用户运行脚本
 if [ "$(id -u)" != "0" ]; then
     echo "此脚本需要以root用户权限运行。"
@@ -54,7 +55,7 @@ function install_nodejs_and_npm() {
     else
         echo "Node.js 未安装，正在安装..."
         curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-        sudo apt-get install -y nodejs
+        sudo apt-get install -y nodejs git
     fi
     if command -v npm > /dev/null 2>&1; then
         echo "npm 已安装，版本: $(npm -v)"
@@ -75,16 +76,15 @@ function install_pm2() {
 }
 
 function install_node() {
+    apt update && apt upgrade -y
+    apt install curl sudo git python3-venv iptables build-essential wget jq make gcc nano npm -y
     install_conda
     ensure_conda_initialized
     install_nodejs_and_npm
     install_pm2
-    apt update && apt upgrade -y
-    apt install curl sudo git python3-venv iptables build-essential wget jq make gcc nano npm -y
     read -p "输入Hugging face API: " HF_TOKEN
     read -p "输入Flock API: " FLOCK_API_KEY
     read -p "输入任务ID: " TASK_ID
-    read -p "输入CVD: " CUDA_VISIBLE_DEVICES
     # 克隆仓库
     git clone https://github.com/FLock-io/llm-loss-validator.git
     # 进入项目目录
@@ -101,7 +101,7 @@ function install_node() {
 #!/bin/bash
 source "$MINICONDA_PATH/bin/activate" llm-loss-validator
 cd $SCRIPT_DIR/src
-CUDA_VISIBLE_DEVICES="$CUDA_VISIBLE_DEVICES" \
+CUDA_VISIBLE_DEVICES=0 \
 bash start.sh \
 --hf_token "$HF_TOKEN" \
 --flock_api_key "$FLOCK_API_KEY" \
