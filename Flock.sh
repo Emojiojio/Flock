@@ -148,7 +148,7 @@ install_node() {
     cd llm-loss-validator || exit 1
 
     echo "🐍 创建 Conda 环境..."
-    conda create -n llm-loss-validator python==3.10 -y
+    conda create -n llm-loss-validator python==3.10.12 -y
     source "$MINICONDA_PATH/bin/activate" llm-loss-validator
 
     echo "📦 安装 Python 依赖..."
